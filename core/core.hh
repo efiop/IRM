@@ -1,41 +1,47 @@
 #include <iostream>
 #include <vector>
-#include <Eigen>
+#include <eigen3/Eigen/Dense>
 
-typedef std::vector <Matrix3d::Vector3d> face_t;
+using namespace Eigen;
+using namespace std;
 
 class Color
 {
+public:
 	unsigned char red;
 	unsigned char green;
 	unsigned char blue;
-}
+};
 
 class Face
 {
-	std::vector <Matrix3d::Vector3d> vertices;
+public:
+	std::vector <Vector3d> vertices;
 	Color color;
-}
+};
 
 class Source
 {
-	Matrix3d::Vector3d r;
+public:
+	Vector3d r;
 	double intencity;
-}
+};
 
-std::vector <Source> Sources;
+extern std::vector <Source> sources;
 
 class Sample
 {
+public:
 	std::vector <Face> faces;
 	double k;
-}
+};
 
-std::vector <Sample> Samples;
+extern std::vector <Sample> samples;
 
 class Detector
 {
+public:
 	std::vector <Face> faces;
-}
+};
 
-std::vector <Detector> Detectors;
+extern std::vector <Detector> detectors;
