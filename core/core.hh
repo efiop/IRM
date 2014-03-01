@@ -27,8 +27,6 @@ public:
 	double intencity;
 };
 
-extern std::vector <Source> sources;
-
 class Sample
 {
 public:
@@ -36,12 +34,28 @@ public:
 	double k;
 };
 
-extern std::vector <Sample> samples;
-
 class Detector
 {
 public:
 	std::vector <Face> faces;
 };
 
-extern std::vector <Detector> detectors;
+class Core
+{
+public:
+    void add_source(Source source);
+    void add_sample(Sample sample);
+    void add_detector(Detector detector);
+    void run(void);
+    void add_objects_from_file(char *fname);
+    void add_source_from_file(char *fname);
+    void add_sample_from_file(char *fname);
+    void add_detector_from_file(char *fname);
+
+protected:
+    std::vector <Source>    sources;
+    std::vector <Sample>    samples;
+    std::vector <Detector>  detectors;
+    void compute(Source source, Detector detector);
+
+};
