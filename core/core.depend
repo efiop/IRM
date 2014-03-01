@@ -1,0 +1,38 @@
+# depslib dependency file v1.0
+1393593861 source:/home/efiop/git/IRM/core/core.cc
+	"core.hh"
+
+1393593863 /home/efiop/git/IRM/core/core.hh
+	<iostream>
+	<vector>
+	<eigen3/Eigen/Dense>
+
+1393668604 source:/home/efiop/git/IRM/core/irm.cc
+	<iostream>
+	"parse_input_file.hh"
+	"core.hh"
+
+1393585957 /home/efiop/git/IRM/core/parse_input_file.hh
+
+1393668621 source:/home/efiop/git/IRM/core/parse_input_file.cc
+	<string.h>
+	<stdio.h>
+	<err.h>
+	"core.hh"
+	"rply.h"
+
+1393622088 /home/efiop/git/IRM/core/rply.h
+
+1393585778 source:/home/efiop/git/IRM/core/rply.c
+	<stdio.h>
+	<ctype.h>
+	<assert.h>
+	<string.h>
+	<limits.h>
+	<float.h>
+	<stdarg.h>
+	<stdlib.h>
+	<stddef.h>
+	"rply.h"
+	<stdint.h>
+
