@@ -1,6 +1,0 @@
-[sources]
-./source.ply
-[samples]
-./sample.ply
-[detectors]
-./detector.ply

@@ -11,6 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="./input" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -32,7 +33,19 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="main.cpp" />
+		<Unit filename="core.cc" />
+		<Unit filename="core.hh" />
+		<Unit filename="detector.ply" />
+		<Unit filename="input" />
+		<Unit filename="irm.cc" />
+		<Unit filename="parse_input_file.cc" />
+		<Unit filename="parse_input_file.hh" />
+		<Unit filename="rply.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="rply.h" />
+		<Unit filename="sample.ply" />
+		<Unit filename="source.ply" />
 		<Extensions>
 			<code_completion />
 			<envvars />
