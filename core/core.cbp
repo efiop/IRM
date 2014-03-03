@@ -38,8 +38,6 @@
 		<Unit filename="detector.ply" />
 		<Unit filename="input" />
 		<Unit filename="irm.cc" />
-		<Unit filename="parse_input_file.cc" />
-		<Unit filename="parse_input_file.hh" />
 		<Unit filename="rply.c">
 			<Option compilerVar="CC" />
 		</Unit>
