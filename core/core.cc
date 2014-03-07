@@ -214,17 +214,55 @@ void Core::add_objects_from_file(char *fname)
 
 void Core::run(void)
 {
-    unsigned int i, j;
-
-    for (i = 0; i < sources.size(); i++) {
-        for (j = 0; j < detectors.size(); j++) {
-            compute(sources[i],detectors[i]);
-        }
-    }
-}
-
-void Core::compute(Source source, Detector detector)
-{
     return;
 }
 
+Vector3d Core::check_intersection(Face face, Vector3d ray_start, Vector3d ray_end)
+{
+    /*
+     * plane: R = R0 + b*u + c*v
+     * line: r = r0 + a*t
+     * System to solve: r0-R0 = (b,c,-a)*(u,v,t)
+     */
+    Vector3d a, b, c, p, x, d;
+    Matrix3d M;
+    double relative_error;
+    double phi = 0.0;
+    unsigned int i;
+
+    a = ray_end - ray_start;
+
+    b = face.vertices[1] - face.vertices[0];
+    c = face.vertices[2] - face.vertices[0];
+
+    M.col(0) = b;
+    M.col(1) = c;
+    M.col(2) = -a;
+
+    d = ray_start - face.vertices[0];
+
+    p = M.fullPivLu().solve(d);
+
+    relative_error = (M*x - d).norm() / d.norm();
+    if (relative_error > 0.01)
+        throw false;
+
+    x = ray_start + a * p[2];
+
+    /*
+     * Check, if x is in the polygon
+     */
+
+    for (i=0; i < face.vertices.size()-1; i++) {
+        Vector3d q, w;
+        q = x - face.vertices[i];
+        w = x - face.vertices[i+1];
+        phi += acos(abs(q.dot(w))/(q.norm()*w.norm()));
+    }
+
+    relative_error = abs(2.*3.14 - phi)/(2.*3.14);
+    if (relative_error > 0.01)
+        throw false;
+
+    return x;
+}

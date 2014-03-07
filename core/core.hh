@@ -56,6 +56,5 @@ protected:
     std::vector <Source>    sources;
     std::vector <Sample>    samples;
     std::vector <Detector>  detectors;
-    void compute(Source source, Detector detector);
-
+    Vector3d check_intersection(Face face, Vector3d ray_start, Vector3d ray_end);
 };
