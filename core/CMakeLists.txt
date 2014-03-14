@@ -1,1 +1,1 @@
-add_executable(irm-core irm.cc core.cc rply.c)
+add_executable(irm-core irm-core.cpp Core.cpp)
