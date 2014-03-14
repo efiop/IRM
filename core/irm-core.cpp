@@ -1,6 +1,13 @@
 #include <iostream>
 #include "Core.hpp"
 
+/*
+ * FIXME consider using getopt(3) to parse CLI options.
+ * Consider using something like this:
+ * "irm-core --source [files] --sample [files] --detector [files]"
+ */
+
+
 int main(int argc, char *argv[])
 {
 	if (argc != 2)
