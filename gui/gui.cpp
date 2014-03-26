@@ -1,29 +1,37 @@
-#include "gui.hpp"
+#include "gui.h"
+#include "ui_gui.h"
 
-GUI::GUI(int *argc, char **argv)
+#include <QString>
+#include <QFileDialog>
+GUI::GUI(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::GUI)
 {
-	glutInit(argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(500, 500);
-	glutCreateWindow("IRM");
-
-	glutReshapeFunc(GUI::Reshape);
-	glutDisplayFunc(GUI::Display);
-
-	glClearColor(0.3, 0.3, 0.3, 0.0);
-
-	glEnable(GL_DEPTH_TEST);
+    ui->setupUi(this);
 }
 
-void GUI::Display(void)
+GUI::~GUI()
 {
+    delete ui;
 }
 
-void GUI::Reshape(int w, int h)
+void GUI::on_actionNew_project_triggered()
 {
+
 }
 
-void GUI::Run(void)
+void GUI::on_actionLoad_project_triggered()
 {
-	glutMainLoop();
+
+}
+
+void GUI::on_actionImport_model_triggered()
+{
+    QString fname = QFileDialog::getOpenFileName(
+                this,
+                tr("Import model"),
+                "/",
+                "All files(*.*)");
+
+   ui->widget->import(fname.toStdString());
 }
