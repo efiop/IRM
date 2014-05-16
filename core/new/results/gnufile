@@ -1,0 +1,7 @@
+#!/usr/bin/gnuplot
+set term jpeg
+set out "results/pic"
+set size ratio 1
+set palette gray negative
+set cbrange[0.647756:1]
+plot "results/result" matrix w image noti
