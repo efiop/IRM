@@ -111,6 +111,7 @@ GLWidget::GLWidget(QWidget *parent) :
     cout << 100*o.face[0].dot[1].transpose() << endl;
     cout << 100*o.face[0].dot[2].transpose() << endl;
     cout << 100*o.face[0].dot[3].transpose() << endl;
+    zoom = 20;
 //    cout << o.face[0].dot[0][0] << endl;
 }
 //fill_struct("scissors.ply");
@@ -195,7 +196,7 @@ void GLWidget::draw_my()
 		glBegin(GL_POLYGON);
 		for (int k = 0;k < o.face[j].dot.size();k++) {
 			for (int r = 0;r < 3;r++)
-				v[r] = 100*o.face[j].dot[k][r];
+				v[r] = zoom*o.face[j].dot[k][r];
 			glVertex3fv(v);
 		}
 		glEnd();
@@ -265,6 +266,11 @@ void GLWidget::keyPressEvent(QKeyEvent* event)
     if (event->key() == Qt::Key_D)
         camera.holdingRightStrafe = true;
 
+	if (event->key() == Qt::Key_Z)
+		zoom += 2;
+
+	if (event->key() == Qt::Key_M)
+		zoom -= 2;
     event->accept();
 }
 

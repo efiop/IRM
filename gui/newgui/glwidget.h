@@ -21,6 +21,7 @@ public:
     void resizeGL(int w, int h);
 
     bool import(const std::string& pFile);
+	int zoom;
 /*
 signals:
 
