@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 #include <GL/gl.h>
+//#include <GL/gl.h>
+#include <math.h>
 
 class Camera
 {

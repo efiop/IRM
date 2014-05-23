@@ -15,13 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         gui.cpp \
     glwidget.cpp \
-    camera.cpp
+    camera.cpp \
+    dialog.cpp
 
 HEADERS  += gui.h \
     glwidget.h \
-    camera.h
+    camera.h \
+    dialog.h
 
-FORMS    += gui.ui
+FORMS    += gui.ui \
+    dialog.ui
 LIBS     += -lGLU -lassimp -lglut
 
-OTHER_FILES +=
+OTHER_FILES += \
+    scissors.ply

@@ -1,14 +1,11 @@
 #include "camera.h"
 
-#include <GL/gl.h>
-#include <math.h>
-
 #define toRads(x) ((x*3.141592654f)/180.0f)
 
 Camera::Camera() {
-    XPos = 10.f;
-    YPos = 10.f;
-    ZPos = 10.f;
+    XPos = 0.f;    // points structure made of two coordinates; x and y
+    YPos = 0.f;
+    ZPos = 0.f;
 
     XRot = 0.f;
     YRot = 0.f;
