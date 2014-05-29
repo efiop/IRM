@@ -1,13 +1,18 @@
 IRM-cs-project
 ==============
-Keys:
-Esc - turn on free arrow
-q   -turn off free arrow
-z - increasing ply object
-m - decreasing ply object
 
-Запуск:
-1)in core do make
-2)build IRM.pro with QT
-3)do in gui ../build...././IRM
+### Build ###
+1)at gui/core:
+	make
+2)at gui:
+	cmake
+	make
 
+### Run ###
+	gui/IRM
+
+### Controls ###
+	Esc	- free mouse
+	q	- grab mouse
+	z	- increase object
+	m	- decrease object
