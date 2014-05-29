@@ -8,7 +8,7 @@ $ make
 ```
 at gui:
 ```
-	$ cmake
+	$ qmake
 	$ make
 ```
 
