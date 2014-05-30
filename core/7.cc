@@ -177,7 +177,7 @@ void *pthread_f(void *arg)
 }
 
 
-struct date
+struct data
 {
 	int height, width;
 	int number;
@@ -194,7 +194,7 @@ struct date
 };
 
 double screen
-(date D)
+(data D)
 {
 	ofstream ss;
 	double ch, min = 1;
@@ -261,7 +261,7 @@ double screen
 	ss.close();
 }
 
-double example_filling_obj(date& D)
+double example_filling_obj(data& D)
 {
 	ifstream stream1;
 	stream1.open(D.data_file.c_str());
@@ -400,7 +400,7 @@ string gnu_place, double bottom)
 	sleep(1);
 }
 
-int init_data(date& D,string file)
+int init_data(data& D,string file)
 {
 	ifstream s;
 	s.open(file.c_str());
@@ -467,7 +467,7 @@ int init_data(date& D,string file)
 
 int main(int argc, char **argv)
 {
-	date D;
+	data D;
 //	init_data(D, RC_FILE);
 	init_data(D,RC_FILE);
 	int drawflag = 0, showflag = 0;
