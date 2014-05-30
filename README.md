@@ -8,13 +8,14 @@ $ make
 ```
 at gui:
 ```
-	$ qmake
-	$ make
+$ qmake
+$ make
 ```
 
 ### Run ###
+```
 	gui/IRM
-
+```
 ### Controls ###
 	Esc	- free mouse
 	q	- grab mouse
