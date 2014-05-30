@@ -11,6 +11,9 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+
+#include "core.h"
+
 #define TEXT "Usage:./1 [OPTION]\n\
 \t-h help\n\t-P [PLY_file]\n\t-R [use RC_FILE] for data\n\t-r\
 [result_file]\n\t-c\
@@ -25,25 +28,8 @@ coordinates]\n\t-H [Screen height]\n\t-W [Screen width]\n\t-t\
 using namespace std;
 using namespace Eigen;
 
-struct Face
-{
-	vector<Vector3d> dot;
-};
-
-struct obj
-{
-	vector<Face> face;
-};
-
 obj o;
 Vector3d source;
-
-struct intersection_dot
-{
-	Vector3d r;
-	int exist;
-	int fail;
-};
 
 int dot_belong_polygon1(Face& f, intersection_dot *O)
 {
@@ -113,30 +99,6 @@ double polygon_segment_intersection(Face& f, Vector3d x,Vector3d y)
 		return 0;
 }
 
-struct Screen_dot_impotant_struct
-{
-	Screen_dot_impotant_struct(Vector3d a) {
-		coordinate = a;
-	}
-	Vector3d coordinate;
-	double intense;
-};
-
-struct pthread_arg
-{
-	pthread_arg
-	(vector<Screen_dot_impotant_struct>::iterator it1, int amount1
-	,int det1)
-	{
-		it = it1;
-		amount = amount1;
-		det = det1;
-	}
-	vector<Screen_dot_impotant_struct>::iterator it;
-	int amount;
-	int det;
-};
-
 void *pthread_f(void *arg)
 {
 	pthread_arg *argum = (pthread_arg*)arg;
@@ -176,22 +138,6 @@ void *pthread_f(void *arg)
 	}
 }
 
-
-struct data
-{
-	int height, width;
-	int number;
-	int pthread_count;
-	int partial;
-	int rest;
-	int now;
-	double koef;
-	string data_file,PLY,filename, gnu_command, gnu_file_name,
-	pic_name;
-	Face Screen;
-	Vector3d step_h;
-	Vector3d step_w;
-};
 
 double screen
 (data D)
@@ -400,76 +346,33 @@ string gnu_place, double bottom)
 	sleep(1);
 }
 
-int init_data(data& D,string file)
+void init_data(data& D, string file)
 {
 	ifstream s;
-	s.open(file.c_str());
-	if ((s.rdstate() & ifstream::failbit ) != 0 ) {
-	    cerr << "Error opening " << file << endl;
-	    exit(0);
+
+	try {
+		s.open(file.c_str());
+
+		getline(s, D.PLY);
+		getline(s, D.filename);
+		getline(s, D.gnu_command);
+		getline(s, D.gnu_file_name);
+		getline(s, D.data_file);
+		getline(s, D.pic_name);
+		s >> D.height;
+		s >> D.width;
+		s >> D.pthread_count;
+		s >> D.koef;
+	} catch (ifstream::failure e) {
+		cerr << "Can't open/read data from file" << file << endl;
+		exit(1);
 	}
-      string str;
-      getline(s, D.PLY);
-	if ((s.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      getline(s, D.filename);
-	if ((s.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      getline(s, D.gnu_command);
-	if ((s.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      getline(s, D.gnu_file_name);
-	if ((s.rdstate() & !(ifstream::goodbit) ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      getline(s, D.data_file);
-	if ((s.rdstate() & !(ifstream::goodbit)) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      getline(s, D.pic_name);
-	if ((s.rdstate() & !(ifstream::goodbit)) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      s >> D.height;
-	if ((s.rdstate() & !(ifstream::goodbit)) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      s >> D.width;
-	if ((s.rdstate() & !(ifstream::goodbit)) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      s >> D.pthread_count;
-	if ((s.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-      s >> D.koef;
-	if ((s.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from" << file << endl;
-	    exit(0);
-	}
-	s.close();
-	return 0;
 }
-	
-	
 
 int main(int argc, char **argv)
 {
 	data D;
-//	init_data(D, RC_FILE);
-	init_data(D,RC_FILE);
+	init_data(D, RC_FILE);
 	int drawflag = 0, showflag = 0;
 	int opt = getopt(argc, argv, "RP:r:c:i:g:C:S:H:W:t:hds");
 	while (opt != -1) {
