@@ -11,6 +11,14 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <cerrno>
+#include <cstring>
+
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <boost/tokenizer.hpp>
+#include <boost/token_functions.hpp>
 
 #include "core.h"
 
@@ -25,8 +33,18 @@ coordinates]\n\t-H [Screen height]\n\t-W [Screen width]\n\t-t\
  #define VIEWVER "/usr/bin/feh"
  #define VIEWVER_NAME "feh"
 
+//#define pr_perror(fmt, ...)						\
+	printf("Error (%s:%d): " fmt " : %s\n" ,	\
+		__FILE__, __LINE__, ##__VA_ARGS__, strerror(errno))
+
+#define pr_perror(fmt, ...)						\
+	printf("Error (%s:%d): " fmt "\n",			\
+		__FILE__, __LINE__, ##__VA_ARGS__)
+
 using namespace std;
 using namespace Eigen;
+using namespace boost;
+using namespace boost::program_options;
 
 obj o;
 Vector3d source;
@@ -351,8 +369,15 @@ void init_data(data& D, string file)
 	ifstream s;
 
 	try {
-		s.open(file.c_str());
+		s.exceptions(ios::failbit);
 
+		s.open(file.c_str());
+	} catch (ifstream::failure e) {
+		pr_perror("Can't open file %s", file.c_str());
+		exit(1);
+	}
+
+	try {
 		getline(s, D.PLY);
 		getline(s, D.filename);
 		getline(s, D.gnu_command);
@@ -364,7 +389,7 @@ void init_data(data& D, string file)
 		s >> D.pthread_count;
 		s >> D.koef;
 	} catch (ifstream::failure e) {
-		cerr << "Can't open/read data from file" << file << endl;
+		pr_perror("Not enough data in the file %s", file.c_str());
 		exit(1);
 	}
 }
@@ -372,66 +397,99 @@ void init_data(data& D, string file)
 int main(int argc, char **argv)
 {
 	data D;
-	init_data(D, RC_FILE);
+
 	int drawflag = 0, showflag = 0;
-	int opt = getopt(argc, argv, "RP:r:c:i:g:C:S:H:W:t:hds");
-	while (opt != -1) {
-		switch (opt) {
-			case 'R':
-//				init_data(D, RC_FILE);
-				break;
-			case 'P':
-				D.PLY = optarg;
-				break;
-			case 'r':
-				D.filename = optarg;
-				break;
-			case 'c':
-				D.gnu_command = optarg;
-				break;
-			case 'i':
-				D.pic_name = optarg;
-				break;
-			case 'g':
-				D.gnu_file_name = optarg;
-				break;
-			case 'C':
-				D.koef = atoi(optarg);
-				break;
-			case 'S':
-				D.data_file = optarg;
-				break;
-			case 'H':
-				D.height = atoi(optarg);
-				break;
-			case 'W':
-				D.width = atoi(optarg);
-				break;
-			case 't':
-				D.pthread_count = atoi(optarg);
-				break;
-			case 'h':
-				cout << TEXT << endl;
-				exit(0);
-			case 'd':
-				drawflag = 1;
-				break;
-			case 's':
-				showflag = 1;
-				break;
-		}
-		opt = getopt(argc, argv, "RP:r:c:i:g:C:S:H:W:t:hds");
+
+	options_description desc("Interaction of Radiation with Matter");
+
+	desc.add_options()
+    ("help,h", "Produce this help message.")
+	("file,R", value<string>(), "file for data")
+	("ply,PLY", value<string>(), "object in ply format")
+	("result,r", value<string>(), "result file")
+	("cmd,c", value<string>(), "gnuplot command")
+	("img,i", value<string>(), "gnuplot image file")
+	("script,g", value<string>(), "gnuplot script")
+	("coef,C", value<double>(), "XRAY coefficient")
+	("source,S", value<string>(), "file with source & screen coordinates")
+	("height,H", value<int>(), "screen height")
+	("width,W", value<int>(), "screen width")
+	("threads,t", value<int>(), "number of threads")
+	("show,s", "show picture")
+	("draw,d", "draw picture");
+
+	positional_options_description p;
+//	p.add("file", -1);
+
+	variables_map vm;
+	try
+	{
+    	store(command_line_parser(
+	    argc, argv).options(desc).positional(p).run(), vm);
+    	notify(vm);
+	} catch (std::exception &e) {
+	    cout << endl << e.what() << endl;
+    	cout << desc << endl;
 	}
+
+	if (vm.count("help")) {
+		cout << desc << endl;
+		exit(0);
+	}
+	
+	if (vm.count("file"))
+		init_data(D, vm["file"].as<string>());
+
+	if (vm.count("ply"))
+		D.PLY = (vm["ply"].as<string>()).c_str();
+
+	if (vm.count("result"))
+		D.filename = (vm["result"].as<string>()).c_str();
+
+	if (vm.count("cmd"))
+		D.gnu_command = (vm["cmd"].as<string>()).c_str();
+
+	if (vm.count("img"))
+		D.pic_name = (vm["img"].as<string>()).c_str();
+
+	if (vm.count("script"))
+		D.gnu_file_name = (vm["script"].as<string>()).c_str();
+	
+	if (vm.count("coef"))
+		D.koef = vm["coef"].as<double>();
+
+	if (vm.count("source"))
+		D.data_file = (vm["source"].as<string>()).c_str();
+
+	if (vm.count("height"))
+		D.height = vm["height"].as<int>();
+
+	if (vm.count("width"))
+		D.width = vm["width"].as<int>();
+
+	if (vm.count("threads"))
+		D.pthread_count = vm["threads"].as<int>();
+
+	if (vm.count("draw"))
+		drawflag = 1;
+	
+	if (vm.count("show"))
+		showflag = 1;
+
 	fill_struct(D.PLY);
+
 	double x = example_filling_obj(D);//fill object and calculate
+	
 	if (drawflag)
 		draw(D.filename, D.gnu_file_name,
 		D.pic_name,D.gnu_command,x);
+	
 	if (showflag) {
 		if (fork() == 0)
 			execl(VIEWVER, VIEWVER_NAME,D.pic_name.c_str()
 			, NULL);
 		wait(NULL);
 	}
+
 	return 0;
 }
