@@ -221,50 +221,43 @@ double screen
 double example_filling_obj(data& D)
 {
 	ifstream stream1;
-	stream1.open(D.data_file.c_str());
-	if ((stream1.rdstate() & ifstream::failbit ) != 0 ) {
-		cerr << "Error opening " << D.data_file;
-		exit(0);
+
+	try {
+		stream1.exceptions(ios::failbit);
+
+		stream1.open(D.data_file.c_str());
+	} catch (ifstream::failure e) {
+		pr_perror("Can't open file %s", D.data_file.c_str());
+		exit(1);
 	}
 
 	double a, b, c;
-	stream1 >> a >> b >> c;
-	if ((stream1.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from " << D.data_file <<  endl;
-	    exit(0);
+
+	try {
+		stream1 >> a >> b >> c;
+
+		source = Vector3d(a, b, c);
+
+		stream1 >> a >> b >> c;
+
+		D.Screen.dot.push_back(Vector3d(a, b, c));
+
+		stream1 >> a >> b >> c;
+		
+		D.Screen.dot.push_back(Vector3d(a, b, c));
+
+		stream1 >> a >> b >> c;
+
+		D.Screen.dot.push_back(Vector3d(a, b, c));
+
+		stream1 >> a >> b >> c;
+		
+		D.Screen.dot.push_back(Vector3d(a, b, c));
+	} catch (ifstream::failure e) {
+		pr_perror("Not enough data in file", D.data_file.c_str());
+		exit(1);
 	}
 
-	source = Vector3d(a, b, c);
-
-	stream1 >> a >> b >> c;
-	if ((stream1.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from " << D.data_file <<  endl;
-	    exit(0);
-	}
-	D.Screen.dot.push_back(Vector3d(a, b, c));
-
-	stream1 >> a >> b >> c;
-	if ((stream1.rdstate() & !ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from " << D.data_file <<  endl;
-	    exit(0);
-	}
-	D.Screen.dot.push_back(Vector3d(a, b, c));
-
-	stream1 >> a >> b >> c;
-	if ((stream1.rdstate() & ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from " << D.data_file <<  endl;
-	    exit(0);
-	}
-	D.Screen.dot.push_back(Vector3d(a, b, c));
-
-	stream1 >> a >> b >> c;
-	if ((stream1.rdstate() & ifstream::goodbit ) != 0 ) {
-	    cerr << "Error reading from " << D.data_file <<  endl;
-	    exit(0);
-	}
-	D.Screen.dot.push_back(Vector3d(a, b, c));
-
-	stream1.close();
 	return screen(D);
 }
 
