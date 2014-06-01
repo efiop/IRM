@@ -22,16 +22,9 @@
 
 #include "core.h"
 
-#define TEXT "Usage:./1 [OPTION]\n\
-\t-h help\n\t-P [PLY_file]\n\t-R [use RC_FILE] for data\n\t-r\
-[result_file]\n\t-c\
-[gnuplot_command]\n\t-i [gnuplt_image_file]\n\t-g [gnuplot_script]\
-\n\t-C [XRAY_coefficient]\n\t-S [file with source & screen\
-coordinates]\n\t-H [Screen height]\n\t-W [Screen width]\n\t-t\
- [count of pthreads]\n\t-s show picture\n\t-d draw picture"
- #define RC_FILE "core/FILE"
- #define VIEWVER "/usr/bin/feh"
- #define VIEWVER_NAME "feh"
+#define RC_FILE "core/FILE"
+#define VIEWVER "/usr/bin/feh"
+#define VIEWVER_NAME "feh"
 
 //#define pr_perror(fmt, ...)						\
 	printf("Error (%s:%d): " fmt " : %s\n" ,	\
